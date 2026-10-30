@@ -156,3 +156,5 @@ LOGGING = {
         'level': 'INFO' if DEBUG else 'WARNING',
     },
 }
+
+AUTH_USER_MODEL = 'users.User'
