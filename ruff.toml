@@ -1,0 +1,18 @@
+line-length = 88
+target-version = "py313"
+
+[lint]
+select = [
+    "E",   # Pycodestyle errors
+    "W",   # Pycodestyle warnings
+    "F",   # Pyflakes (variables inutilisées, imports morts)
+    "I",   # isort (tri automatique des imports)
+    "DJ",  # Bonnes pratiques Django
+    "UP",  # pyupgrade (syntaxe Python moderne)
+]
+ignore = [
+    "E501", # Ignore les lignes trop longues
+]
+
+[lint.isort]
+known-first-party = ["config"]
