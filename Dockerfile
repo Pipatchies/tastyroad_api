@@ -4,7 +4,7 @@ FROM python:3.15-slim-trixie AS builder
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-# System dependencies for GeoDjango and netcat for PostgreSQL wait loop
+# System dependencies for GeoDjango and netcat
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         binutils \
@@ -29,6 +29,9 @@ ENTRYPOINT ["/entrypoint.sh"]
 # 2. Development Stage
 FROM builder AS development
 
+COPY requirements-dev.txt .
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
 COPY . .
 
 # Hot-reload and verbose request logging for development
@@ -47,4 +50,4 @@ RUN chown -R appuser:appgroup /app
 USER appuser
 
 # Optimized production mode without reload
-    CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]
+CMD ["gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000", "--workers", "3"]

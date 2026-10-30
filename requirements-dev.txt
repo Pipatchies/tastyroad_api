@@ -1,0 +1,15 @@
+-r requirements.txt
+
+# Tests
+pytest==8.3.4
+pytest-django==4.9.0
+pytest-cov==6.0.0
+factory-boy==3.3.1
+faker==33.3.0
+
+# Swagger Documentation
+drf-spectacular==0.28.0
+
+# Linter & Formatter
+ruff==0.9.7
+pre-commit==4.1.0
