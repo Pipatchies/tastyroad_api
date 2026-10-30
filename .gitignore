@@ -19,6 +19,12 @@ media/
 staticfiles/
 *.log
 
+# Tests & Qualité de code
+.coverage
+htmlcov/
+.pytest_cache/
+.ruff_cache/
+
 # Éditeurs & Système
 .vscode/
 .idea/
