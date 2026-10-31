@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "users",
     "core",
+    "places",
+    "itineraries",
 ]
 
 MIDDLEWARE = [
