@@ -16,8 +16,31 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+
+from itineraries.views import (
+    CommentViewSet,
+    FavoriteViewSet,
+    ItineraryViewSet,
+    StepViewSet,
+)
+from places.views import FoodPlaceViewSet
+from users.views import RegisterView, UserProfileView
+
+router = DefaultRouter()
+router.register(r"itineraries", ItineraryViewSet, basename="itinerary")
+router.register(r"comments", CommentViewSet, basename="comment")
+router.register(r"favorites", FavoriteViewSet, basename="favorite")
+router.register(r"steps", StepViewSet, basename="step")
+router.register(r"foodplaces", FoodPlaceViewSet, basename="foodplace")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
+    path("api/users/register/", RegisterView.as_view(), name="user_register"),
+    path("api/users/me/", UserProfileView.as_view(), name="user_profile"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]
