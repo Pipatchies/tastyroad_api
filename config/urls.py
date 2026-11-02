@@ -20,6 +20,7 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
+from itineraries.raw_views import raw_sql_itineraries_view
 from itineraries.views import (
     CommentViewSet,
     FavoriteViewSet,
@@ -43,4 +44,5 @@ urlpatterns = [
     path("api/users/me/", UserProfileView.as_view(), name="user_profile"),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/raw/itineraries/", raw_sql_itineraries_view, name="raw-itineraries"),
 ]
