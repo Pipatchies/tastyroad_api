@@ -47,6 +47,8 @@ COPY . .
 
 RUN chown -R appuser:appgroup /app
 
+ENV HOME=/app
+
 USER appuser
 
 # Optimized production mode without reload
