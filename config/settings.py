@@ -71,6 +71,7 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -80,6 +81,13 @@ REST_FRAMEWORK = {
         "rest_framework.throttling.UserRateThrottle",
     ],
     "DEFAULT_THROTTLE_RATES": {"anon": "10/minute", "user": "1000/day"},
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "TastyRoad API",
+    "DESCRIPTION": "API REST & GeoJSON pour la découverte d'itinéraires gourmands régionaux.",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 ROOT_URLCONF = "config.urls"
