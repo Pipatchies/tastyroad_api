@@ -103,6 +103,7 @@ class Command(BaseCommand):
                 description=desc,
                 location=Point(lon, lat),
             )
+
             foodplaces.append(place)
 
         self.stdout.write("Création de 15 itinéraires avec étapes et avis...")
