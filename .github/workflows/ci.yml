@@ -65,4 +65,4 @@ jobs:
           POSTGRES_DB: tastyroad_test_db
           POSTGRES_USER: ci_user
           POSTGRES_PASSWORD: dummy_password
-        run: pytest --cov=core --cov=users --cov-report=term-missing --disable-warnings -q
+        run: pytest --disable-warnings -q
