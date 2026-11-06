@@ -113,3 +113,46 @@ class TestItineraryAPI:
 
         response_bad = self.client.get("/api/raw/itineraries/?limit=-5")
         assert response_bad.status_code == 400
+
+    def test_non_author_cannot_delete_itinerary(self):
+        """Vérifie qu'un utilisateur connecté ne peut pas supprimer l'itinéraire d'un autre (403)."""
+        other_user = User.objects.create_user(username="bob", password="password123")
+        itinerary = Itinerary.objects.create(
+            title="Parcours de Bob",
+            author=other_user,
+            path=LineString((1.0, 43.0), (1.1, 43.1)),
+        )
+
+        self.authenticate()
+        response = self.client.delete(f"{self.url}{itinerary.id}/")
+
+        assert response.status_code == 403
+        assert Itinerary.objects.filter(id=itinerary.id).exists() is True
+
+    def test_author_and_admin_can_delete_itinerary(self):
+        """Vérifie que l'auteur ou un admin (is_staff) peut supprimer un itinéraire (204)."""
+        own_itinerary = Itinerary.objects.create(
+            title="Mon Parcours",
+            author=self.user,
+            path=LineString((1.0, 43.0), (1.1, 43.1)),
+        )
+        self.authenticate()
+        response_author = self.client.delete(f"{self.url}{own_itinerary.id}/")
+        assert response_author.status_code == 204
+
+        other_user = User.objects.create_user(username="bob", password="password123")
+        bob_itinerary = Itinerary.objects.create(
+            title="Parcours de Bob",
+            author=other_user,
+            path=LineString((1.0, 43.0), (1.1, 43.1)),
+        )
+        admin = User.objects.create_superuser(
+            username="admin_chef",
+            email="admin@tastyroad.com",
+            password="adminpassword123",
+        )
+        refresh = RefreshToken.for_user(admin)
+        self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
+
+        response_admin = self.client.delete(f"{self.url}{bob_itinerary.id}/")
+        assert response_admin.status_code == 204
