@@ -1,5 +1,7 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly
+
+from core.permissions import IsAuthorOrAdminOrReadOnly
 
 from .models import Comment, Favorite, Itinerary, Step
 from .serializers import (
@@ -13,6 +15,7 @@ from .serializers import (
 class ItineraryViewSet(viewsets.ModelViewSet):
     queryset = Itinerary.objects.all()
     serializer_class = ItinerarySerializer
+    permission_classes = [IsAuthenticatedOrReadOnly, IsAuthorOrAdminOrReadOnly]
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
