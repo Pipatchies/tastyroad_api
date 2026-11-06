@@ -1,4 +1,3 @@
-# Create your tests here.
 import pytest
 from django.contrib.gis.geos import LineString
 from rest_framework.test import APIClient
@@ -22,9 +21,16 @@ class TestItineraryAPI:
         refresh = RefreshToken.for_user(self.user)
         self.client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
 
-    def test_get_itineraries_without_token_is_blocked(self):
-        """Vérifie que l'accès sans JWT renvoie une erreur 401."""
+    def test_get_itineraries_without_token_is_allowed(self):
+        """Vérifie que la lecture (GET) est publique sans JWT (200 OK)."""
         response = self.client.get(self.url)
+
+        assert response.status_code == 200
+        assert response.json()["type"] == "FeatureCollection"
+
+    def test_create_itinerary_without_token_is_blocked(self):
+        """Vérifie que la création (POST) sans JWT est bloquée (401 Unauthorized)."""
+        response = self.client.post(self.url, {"title": "Test"}, format="json")
 
         assert response.status_code == 401
         assert (
