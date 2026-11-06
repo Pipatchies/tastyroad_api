@@ -27,8 +27,14 @@ class StepViewSet(viewsets.ModelViewSet):
 
 
 class CommentViewSet(viewsets.ModelViewSet):
-    queryset = Comment.objects.all()
     serializer_class = CommentSerializer
+
+    def get_queryset(self):
+        queryset = Comment.objects.all()
+        author_id = self.request.query_params.get("author")
+        if author_id:
+            queryset = queryset.filter(author_id=author_id)
+        return queryset
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
