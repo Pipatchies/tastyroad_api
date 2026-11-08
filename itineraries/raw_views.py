@@ -11,6 +11,8 @@ class ItineraryDTO:
         zone,
         distance,
         duration,
+        difficulty,
+        diet,
         author_username,
         average_rating,
         steps_count,
@@ -21,6 +23,8 @@ class ItineraryDTO:
         self.zone = zone
         self.distance = distance
         self.duration = str(duration) if duration is not None else None
+        self.difficulty = difficulty
+        self.diet = diet
         self.author = author_username
         self.average_rating = round(float(average_rating), 1)
         self.steps_count = int(steps_count)
@@ -34,6 +38,8 @@ class ItineraryDTO:
             "zone": self.zone,
             "distance": self.distance,
             "duration": self.duration,
+            "difficulty": self.difficulty,
+            "diet": self.diet,
             "author": self.author,
             "average_rating": self.average_rating,
             "steps_count": self.steps_count,
@@ -66,6 +72,8 @@ def raw_sql_itineraries_view(request):
                 i.zone,
                 i.distance,
                 i.duration,
+                i.difficulty,
+                i.diet,
                 u.username,
                 COALESCE(AVG(c.review), 0) AS average_rating,
                 COUNT(DISTINCT s.id) AS steps_count
@@ -87,9 +95,11 @@ def raw_sql_itineraries_view(request):
                 zone=row[3],
                 distance=row[4],
                 duration=row[5],
-                author_username=row[6],
-                average_rating=row[7],
-                steps_count=row[8],
+                difficulty=row[6],
+                diet=row[7],
+                author_username=row[8],
+                average_rating=row[9],
+                steps_count=row[10],
             )
             itineraries_data.append(itinerary_obj.to_dict())
 
