@@ -9,15 +9,19 @@ class ItineraryDTO:
         title,
         zone,
         distance,
+        duration,
         author_username,
         average_rating,
+        steps_count,
     ):
         self.id = itinerary_id
         self.title = title
         self.zone = zone
         self.distance = distance
+        self.duration = duration
         self.author = author_username
         self.average_rating = round(float(average_rating), 1)
+        self.steps_count = int(steps_count)
 
     def to_dict(self):
         """Méthode de sérialisation manuelle pour préparer le passage en JSON"""
@@ -26,8 +30,10 @@ class ItineraryDTO:
             "title": self.title,
             "zone": self.zone,
             "distance": self.distance,
+            "duration": self.duration,
             "author": self.author,
             "average_rating": self.average_rating,
+            "steps_count": self.steps_count,
         }
 
 
@@ -56,10 +62,12 @@ def raw_sql_itineraries_view(request):
                 i.zone,
                 i.distance,
                 u.username,
-                COALESCE(AVG(c.review), 0) AS average_rating
+                COALESCE(AVG(c.review), 0) AS average_rating,
+                COUNT(DISTINCT s.id) AS steps_count
             FROM itineraries_itinerary i
             INNER JOIN users_user u ON i.author_id = u.id
             LEFT JOIN itineraries_comment c ON c.itinerary_id = i.id
+            LEFT JOIN itineraries_step s ON s.itinerary_id = i.id
             GROUP BY i.id, u.username
             ORDER BY average_rating DESC, i.id ASC
             LIMIT %s;
@@ -72,8 +80,10 @@ def raw_sql_itineraries_view(request):
                 title=row[1],
                 zone=row[2],
                 distance=row[3],
-                author_username=row[4],
-                average_rating=row[5],
+                duration=row[4],
+                author_username=row[5],
+                average_rating=row[6],
+                steps_count=row[7],
             )
             itineraries_data.append(itinerary_obj.to_dict())
 
