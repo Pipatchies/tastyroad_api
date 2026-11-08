@@ -18,7 +18,7 @@ class ItineraryDTO:
         self.title = title
         self.zone = zone
         self.distance = distance
-        self.duration = duration
+        self.duration = str(duration) if duration is not None else None
         self.author = author_username
         self.average_rating = round(float(average_rating), 1)
         self.steps_count = int(steps_count)
@@ -61,6 +61,7 @@ def raw_sql_itineraries_view(request):
                 i.title,
                 i.zone,
                 i.distance,
+                i.duration,
                 u.username,
                 COALESCE(AVG(c.review), 0) AS average_rating,
                 COUNT(DISTINCT s.id) AS steps_count
