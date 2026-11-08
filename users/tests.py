@@ -71,3 +71,25 @@ class TestUserModel:
         """Ensure __str__ returns the username."""
         user = User.objects.create_user(username="charlie", password="password123")
         assert str(user) == "charlie"
+
+    def test_delete_account_rgpd_right_to_be_forgotten(self):
+        """Vérifie que DELETE /api/users/me/ supprime le compte et ses traces GPS en cascade (RGPD)."""
+        from django.contrib.gis.geos import LineString
+        from rest_framework.test import APIClient
+        from rest_framework_simplejwt.tokens import RefreshToken
+
+        from itineraries.models import Itinerary
+
+        user = User.objects.create_user(username="rgpd_user", password="password123")
+        Itinerary.objects.create(
+            title="Trace GPS personnelle",
+            author=user,
+            path=LineString((1.0, 43.0), (1.1, 43.1)),
+        )
+        client = APIClient()
+        refresh = RefreshToken.for_user(user)
+        client.credentials(HTTP_AUTHORIZATION=f"Bearer {refresh.access_token}")
+        response = client.delete("/api/users/me/")
+        assert response.status_code == 204
+        assert User.objects.filter(id=user.id).exists() is False
+        assert Itinerary.objects.filter(author_id=user.id).exists() is False

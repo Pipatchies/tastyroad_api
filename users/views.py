@@ -13,7 +13,7 @@ class RegisterView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
 
-class UserProfileView(generics.RetrieveUpdateAPIView):
+class UserProfileView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
