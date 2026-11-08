@@ -7,6 +7,7 @@ class ItineraryDTO:
         self,
         itinerary_id,
         title,
+        type,
         zone,
         distance,
         duration,
@@ -16,6 +17,7 @@ class ItineraryDTO:
     ):
         self.id = itinerary_id
         self.title = title
+        self.type = type
         self.zone = zone
         self.distance = distance
         self.duration = str(duration) if duration is not None else None
@@ -28,6 +30,7 @@ class ItineraryDTO:
         return {
             "id": self.id,
             "title": self.title,
+            "type": self.type,
             "zone": self.zone,
             "distance": self.distance,
             "duration": self.duration,
@@ -59,6 +62,7 @@ def raw_sql_itineraries_view(request):
             SELECT
                 i.id,
                 i.title,
+                i.type,
                 i.zone,
                 i.distance,
                 i.duration,
@@ -79,12 +83,13 @@ def raw_sql_itineraries_view(request):
             itinerary_obj = ItineraryDTO(
                 itinerary_id=row[0],
                 title=row[1],
-                zone=row[2],
-                distance=row[3],
-                duration=row[4],
-                author_username=row[5],
-                average_rating=row[6],
-                steps_count=row[7],
+                type=row[2],
+                zone=row[3],
+                distance=row[4],
+                duration=row[5],
+                author_username=row[6],
+                average_rating=row[7],
+                steps_count=row[8],
             )
             itineraries_data.append(itinerary_obj.to_dict())
 
