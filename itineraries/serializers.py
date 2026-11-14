@@ -19,6 +19,8 @@ class StepSerializer(GeoFeatureModelSerializer):
             "foodplace",
         ]
 
+        extra_kwargs = {"itinerary": {"required": False}}
+
 
 class CommentSerializer(serializers.ModelSerializer):
     review = serializers.IntegerField(min_value=1, max_value=5)
@@ -37,7 +39,7 @@ class FavoriteSerializer(serializers.ModelSerializer):
 
 
 class ItinerarySerializer(GeoFeatureModelSerializer):
-    steps = StepSerializer(many=True, read_only=True)
+    steps = StepSerializer(many=True, required=False)
     comments = CommentSerializer(many=True, read_only=True)
 
     class Meta:
@@ -60,3 +62,13 @@ class ItinerarySerializer(GeoFeatureModelSerializer):
             "comments",
         ]
         read_only_fields = ["author"]
+
+    def create(self, validated_data):
+        steps_data = validated_data.pop("steps", [])
+
+        itinerary = super().create(validated_data)
+
+        for step_data in steps_data:
+            Step.objects.create(itinerary=itinerary, **step_data)
+
+        return itinerary
