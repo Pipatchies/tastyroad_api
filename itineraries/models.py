@@ -47,7 +47,7 @@ class Favorite(models.Model):
 class Step(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    picture = models.ImageField(upload_to="steps_pictures/", null=True, blank=True)
+    picture = models.URLField(max_length=500, blank=True, default="")
     step_order = models.PositiveIntegerField()
     location = models.PointField(srid=4326)
     itinerary = models.ForeignKey(
